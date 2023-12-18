@@ -1,6 +1,5 @@
 import * as React from "react";
 import PropTypes from "prop-types";
-import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
@@ -24,6 +23,7 @@ import WalletIcon from "@mui/icons-material/Wallet";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Link } from "react-router-dom";
+import { useTheme } from "@mui/material";
 
 const drawerWidth = 180;
 const iconColor = "#fff";
@@ -39,7 +39,13 @@ const icons = {
 
 function ResponsiveDrawer(props) {
   const { window } = props;
+  const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [selectedItem, setSelectedItem] = React.useState(0);
+
+  const handleListItemClick = (index) => {
+    setSelectedItem(index);
+  };
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -59,15 +65,26 @@ function ResponsiveDrawer(props) {
           "Settings",
         ].map((text, index) => (
           <ListItem
-            key={text}
+            key={index}
             disablePadding
             sx={{ "& .MuiListItemIcon-root": { minWidth: 40 } }}
             component={Link}
             to={text}
           >
-            <ListItemButton dense>
-              <ListItemIcon sx={{ fontSize: 12 }}>{icons[text]}</ListItemIcon>
-              <ListItemText sx={{ color: "#fff" }} primary={text} />
+            <ListItemButton dense onClick={() => handleListItemClick(index)}>
+              <ListItemIcon
+                sx={{
+                  borderLeft:
+                    selectedItem === index ? "2px solid orange" : "none",
+                  p: "0 0 0 8px",
+                }}
+              >
+                {icons[text]}
+              </ListItemIcon>
+              <ListItemText
+                sx={{ color: "#fff", m: "0 0 0 5px" }}
+                primary={text}
+              />
             </ListItemButton>
           </ListItem>
         ))}
@@ -101,6 +118,7 @@ function ResponsiveDrawer(props) {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              background: theme.palette.primary.main,
             },
           }}
         >
@@ -113,7 +131,7 @@ function ResponsiveDrawer(props) {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
-              background: "#0a7d5c",
+              background: theme.palette.primary.main,
             },
           }}
           open
